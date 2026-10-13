@@ -6,6 +6,11 @@ A simple, modern, and responsive To-Do List web application built with **React, 
 
 [View Live Demo](https://to-do-list-app-yjj4.vercel.app/)
 
+## Preview
+
+![TaskHub Dashboard](docs/taskhub-dashboard.png)
+![TaskHub Dashboard](docs/taskhub-dashboard2.png)
+
 ## Features
 
 - **Task management:** Create, edit, delete, and mark tasks as completed.
