@@ -1,4 +1,4 @@
-# To-Do List App
+# TaskHub — Task Management Dashboard
 
 A simple, modern, and responsive To-Do List web application built with **React, TypeScript, Vite, and Tailwind CSS**. It helps users manage daily tasks efficiently with a clean UI and persistent storage.
 
@@ -45,8 +45,8 @@ Install a compatible version of **Node.js** and **npm**.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Sukhdeep-Singh-Panesar/To-Do-List-App.git
-cd To-Do-List-App
+git clone https://github.com/Sukhdeep-Singh-Panesar/TaskHub.git
+cd TaskHub
 ```
 
 > The repository must be public (or you must have GitHub access) to clone it.
@@ -102,7 +102,7 @@ src/
 
 ## Current Limitations
 
-TaskHub is a **frontend-only application**. Task data is saved in each browser's Local Storage, rather than a cloud database. Tasks are not automatically synchronized across devices or browsers, and clearing site data can remove saved tasks.
+TaskHub is a **frontend-only application**. Task data is saved in each browser's Local Storage, rather than a cloud database. Tasks are not automatically synchronised across devices or browsers, and clearing site data can remove saved tasks.
 
 The calendar currently displays dates; tasks cannot be scheduled against specific calendar dates.
 
