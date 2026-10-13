@@ -113,9 +113,21 @@ function App() {
 
 
                 {/*Upper Section*/}
-                <div
-                    className="mx-auto flex max-w-6xl flex-col gap-1 px-6 pt-10 pb-6 text-3xl font-semibold tracking-tight text-slate-900">Hello,
-                    <div className="text-base font-normal text-slate-500"> Start planning today</div></div>
+                <div className="mx-4 my-8 rounded-3xl bg-linear-to-r from-indigo-600 to-violet-600 px-6 py-10 text-white shadow-lg shadow-indigo-100 sm:mx-8 sm:px-10 xl:mx-auto xl:max-w-6xl">
+
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-100">
+                        A little progress, every day
+                    </p>
+
+                    <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                        Make today count.
+                    </h1>
+
+                    <p className="mt-3 max-w-xl text-sm leading-6 text-indigo-100 sm:text-base">
+                        Your plans, tasks, and progress — organized in one calm place.
+                    </p>
+
+                </div>
 
                 <Card
                     className="mx-4 mb-12 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:mx-8 sm:p-6 xl:mx-auto xl:max-w-6xl">
