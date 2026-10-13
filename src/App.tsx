@@ -188,7 +188,7 @@ function App() {
                         {/*</div>*/}
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4 px-4 pb-6 sm:grid-cols-3 sm:px-6">
+                    <div id="overview" className="grid grid-cols-1 gap-4 px-4 pb-6 sm:grid-cols-3 sm:px-6">
 
                         <Card className="gap-2 rounded-xl border border-slate-200 bg-slate-50 p-5 shadow-none">
                         <span className="text-sm font-medium text-slate-500">
@@ -219,7 +219,7 @@ function App() {
 
                     </div>
 
-                    <div className="px-4 pb-6 sm:px-6">
+                    <div id="progress" className="px-4 pb-6 sm:px-6">
                         <div className="mb-2 flex items-center justify-between">
                             <span className="text-sm font-semibold text-slate-700">
                                 Your Progress
@@ -258,7 +258,7 @@ function App() {
                         </div>
                         {/*Todo List Print*/}
 
-                        <div className="min-w-0">
+                        <div id="tasks" className="min-w-0">
                             <div className="mb-4 flex flex-wrap gap-2">
 
                                 <Button

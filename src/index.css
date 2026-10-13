@@ -8,3 +8,7 @@
     --font-island: 'Island Moments';
     --font-roboot: 'Roboto Flex';
 }
+
+html {
+    scroll-behavior: smooth;
+}
