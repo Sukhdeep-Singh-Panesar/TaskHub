@@ -130,21 +130,14 @@ function App() {
                 return;
             }
 
-            if(edit) {
-               setTodo(
-                   todo.map( item => {
-                           if (item.id === edit) {
-                               return (
+            if (edit !== null) {
+                setTodo(todo.map(item =>
+                    item.id === edit
+                        ? { ...item, title: addTitle, detail: addDetail }
+                        : item
+                ));
 
-                                   {...item, title: addTitle, detail: addDetail}
-                               )
-                           } else {
-                               return item
-                           }
-                       }
-                   )
-               )
-
+                setEdit(null);
             }
             else{
                 setTodo([{
@@ -153,9 +146,9 @@ function App() {
                     detail: addDetail,
                     completed: false
                 }, ...todo],);
-                setAddTitle("")
-                setAddDetail("")
             }
+            setAddTitle("")
+            setAddDetail("")
 
         }}>
             <IoMdAdd /> </Button>
