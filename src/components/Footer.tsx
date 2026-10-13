@@ -1,19 +1,46 @@
-import { FaFacebookF } from "react-icons/fa";
-import { FaLinkedinIn } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa";
-import { FcTodoList } from "react-icons/fc";
 function Footer() {
     return (
         <>
-            <div className=" flex w-full justify-between items-center bg-pink-200 gap-2 bottom-0 left-0 fixed p-7">
-                <div className="bottomleft border-2 rounded-full p-2 border-black"><FcTodoList /></div>
-                <div className="centerContainer p-2">&copy; 2026 Sukhdeep Singh. All Rights Reserved. </div>
-                <div className="right flex gap-2">
-                <div className="bottomright border-2 rounded-full p-2 border-black cursor-pointer"><FaFacebookF /></div>
-                <div className="bottomright border-2 rounded-full p-2 border-black cursor-pointer"><FaLinkedinIn /></div>
-                <div className="bottomright border-2 rounded-full p-2 border-black cursor-pointer"><FaXTwitter /></div>
-                <div className="bottomright border-2 rounded-full p-2 border-black cursor-pointer"><FaGithub /></div>
+            <div className="w-full border-t border-slate-200 bg-white px-6 py-6">
+                <div className="mx-auto flex max-w-6xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white">
+                            TH
+                        </div>
+
+                        <div>
+                            <p className="text-sm font-bold text-slate-900">TaskHub</p>
+                            <p className="text-xs text-slate-500">
+                                Stay organized, one task at a time.
+                            </p>
+                        </div>
+                    </div>
+                <div className="centerContainer p-2">
+                    <p className="text-xs text-slate-400">
+                        &copy; {new Date().getFullYear()} TaskHub · Built by Sukhdeep Singh
+                    </p>
+                </div>
+                    <div className="flex items-center gap-5">
+
+                        <a
+                            href="#tasks"
+                            className="text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600"
+                        >
+                            Tasks
+                        </a>
+
+                        <a
+                            href="https://github.com/Sukhdeep-Singh-Panesar"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600"
+                        >
+                            <FaGithub className="h-5 w-5" />
+                            GitHub
+                        </a>
+
+                    </div>
                 </div>
             </div>
         </>

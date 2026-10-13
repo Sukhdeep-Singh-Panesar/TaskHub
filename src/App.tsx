@@ -6,9 +6,9 @@ import {Input} from "@/components/ui/input.tsx";
 import {Card} from "@/components/ui/card.tsx";
 import {Calendar} from "@/components/ui/calendar.tsx";
 import {useState, type SetStateAction, useEffect} from "react";
-import { IoMdAdd } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
-import { CiEdit } from "react-icons/ci";
+import {IoMdAdd} from "react-icons/io";
+import {MdDelete} from "react-icons/md";
+import {CiEdit} from "react-icons/ci";
 import {AlertContext} from "@/context/AlertContext.ts";
 import Alert from "./components/Alert.tsx"
 
@@ -27,30 +27,28 @@ function App() {
 
     type Todo = {
         id: number;
-      title: string;
-      detail: string;
-      completed: boolean;
+        title: string;
+        detail: string;
+        completed: boolean;
     }
 
-    const[addTitle, setAddTitle] = useState<string>("");
-    const[addDetail, setAddDetail] = useState<string>("");
-    const[todo, setTodo] = useState<Todo[]>(()=>{
+    const [addTitle, setAddTitle] = useState<string>("");
+    const [addDetail, setAddDetail] = useState<string>("");
+    const [todo, setTodo] = useState<Todo[]>(() => {
         const todos = localStorage.getItem("todo");
-        if(todos){
+        if (todos) {
             return JSON.parse(todos);
-        }
-        else {
+        } else {
             return []
         }
     });
-    const[edit, setEdit] = useState<number | null>(null);
-    const[alert, setAlert] = useState<boolean>(false);
+    const [edit, setEdit] = useState<number | null>(null);
+    const [alert, setAlert] = useState<boolean>(false);
+    const [filter, setFilter] = useState<"all" | "pending" | "completed">("all");
 
-
-
-    useEffect( () => {
-        localStorage.setItem("todo", JSON.stringify(todo))
-    },[todo]
+    useEffect(() => {
+            localStorage.setItem("todo", JSON.stringify(todo))
+        }, [todo]
     )
 
     const handleAdd = (e: { target: { value: SetStateAction<string>; }; }) => {
@@ -60,25 +58,28 @@ function App() {
         setAddDetail(e.target.value);
     }
 
-    const handleDelete = (id:number) => {
-        setTodo(todo.filter(item=> item.id !== id))
+    const handleDelete = (id: number) => {
+        setTodo(prev => prev.filter(item => item.id !== id));
 
-    }
+        if (edit === id) {
+            setEdit(null);
+            setAddTitle("");
+            setAddDetail("");
+        }
+    };
     const handleEdit = (item: Todo) => {
         setAddTitle(item.title);
         setAddDetail(item.detail)
         setEdit(item.id)
     }
-    const handleComplete = (id:number) => {
-        const newTodo = todo.map((item) =>
-        {
-            if (item.id === id) {
-                return {
-                    ...item, completed: !item.completed
-                }
-            }
-            else{
-                return item
+    const handleComplete = (id: number) => {
+        const newTodo = todo.map((item) => {
+                if (item.id === id) {
+                    return {
+                        ...item, completed: !item.completed
+                    }
+                } else {
+                    return item
                 }
             }
         )
@@ -87,12 +88,18 @@ function App() {
     }
 
 
-
-    const completed = todo.filter(item=>item.completed).length
-    const pendingTask = todo.filter(item=>!item.completed).length
+    const completed = todo.filter(item => item.completed).length
+    const pendingTask = todo.filter(item => !item.completed).length
     const created = todo.length
-  return (
+    const progress = created === 0 ? 0 : Math.round((completed / created) * 100);
 
+    const visibleTodos = todo.filter(item => {
+        if (filter === "completed") return item.completed;
+        if (filter === "pending") return !item.completed;
+        return true;
+    });
+
+    return (
 
 
         <AlertContext.Provider value={{
@@ -101,145 +108,267 @@ function App() {
             addTitle,
             addDetail
         }}>
-            <div className="bg-pink-100">
-     <Navbar />
+            <div className="min-h-screen bg-slate-50 text-slate-900">
+                <Navbar/>
 
 
+                {/*Upper Section*/}
+                <div className="mx-4 my-8 rounded-3xl bg-linear-to-r from-indigo-600 to-violet-600 px-6 py-10 text-white shadow-lg shadow-indigo-100 sm:mx-8 sm:px-10 xl:mx-auto xl:max-w-6xl">
 
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-100">
+                        A little progress, every day
+                    </p>
 
-        {/*Upper Section*/}
-        <div className="uppersection flex text-5xl font-roboot font-semibold gap-2 p-6 w-full pl-25 ml-2">Hello,
-        <div className="uppersection text-5xl font-roboot font-semibold opacity-60"> Start planning today</div> </div>
+                    <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                        Make today count.
+                    </h1>
 
-        <Card className="m-20 mt-2 bg-yellow-50">
-        {/*Middle Section*/}
-        <div className="middle flex gap-6 items-center justify-center p-6 w-full ml-2 ">
-            <div className="datecontainer text-3xl pr-20 font-semibold text-red-300">
-                {day}
-            </div>
+                    <p className="mt-3 max-w-xl text-sm leading-6 text-indigo-100 sm:text-base">
+                        Your plans, tasks, and progress — organized in one calm place.
+                    </p>
 
-        <Input value={addTitle} onChange={handleAdd} type={'text'} placeholder={'type Title of task'} className="h-15 text-sm w-64 ml-15 mr-3 bg-blue-100 placeholder:text-center"/>
-        <Input  value={addDetail} onChange={handleAddDetail} type={'text'} placeholder={'Detail of your task'} className="flex-1 h-15 text-sm bg-blue-100 placeholder:text-center"/>
-
-
-
-        <Button className={'bg-green-600 h-15 w-15 p-4 cursor-pointer'} onClick={()=> {
-            if(addTitle.trim() === "" || addDetail.trim() === "")
-            {
-                setAlert(true)
-                return;
-            }
-
-            if (edit !== null) {
-                setTodo(todo.map(item =>
-                    item.id === edit
-                        ? { ...item, title: addTitle, detail: addDetail }
-                        : item
-                ));
-
-                setEdit(null);
-            }
-            else{
-                setTodo([{
-                    title: addTitle,
-                    id: Date.now(),
-                    detail: addDetail,
-                    completed: false
-                }, ...todo],);
-            }
-            setAddTitle("")
-            setAddDetail("")
-
-        }}>
-            <IoMdAdd /> </Button>
-
-        </div>
-
-            {/*middle-Middle part*/}
-            <div className="middlemiddle flex items-center justify-between p-6 pt-1 w-full ml-2 ">
-                <div className="datecontainer text-3xl pr-20 font-semibold text-red-300">
-                    {fullYearDetail}
-                </div>
-                {/*<div className="searchbar">*/}
-                {/*    <input type={'search'} placeholder={'search...'} className="h-7 w-30 text-sm border-4 border-y-yellow-300 rounded-full placeholder:text-center"></input>*/}
-                {/*</div>*/}
-            </div>
-
-            <div className="flex p-6 pt-1 w-full ml-2 gap-25">
-
-            <div className=" flex flex-col mr-6">
-                <Calendar
-                    mode="single"
-                    className="rounded-lg border border-collapse"
-                />
                 </div>
 
-                {/*Todo List Print*/}
-
-                <div className=" flex-1">
-
-                <ul className="flex flex-wrap gap-4 gap-x-16 ">
-
-                    {todo.map(item =>(
-                     <li key={item.id} className="w-90 mb-4 ">
-                         <Card className="flex flex-col w-90 p-3 h-30 gap-2 bg-[#C7AE93]">
-
-
-                             <div className="checkb flex items-center gap-2">
-                                 <input type="checkbox" className=""  checked={item.completed}
-                                        onChange={() => handleComplete(item.id)}
-
-                                 />
-                             <label id="MAC">Mark as Complete</label>
-                             </div>
-                        <div className="edit flex justify-between items-center">
-                             <span className={item.completed? "line-through": "" }>
-                             Title: {item.title}
-                                  </span>
-                             <Button className="cursor-pointer" onClick={ ()=> {
-                                     handleEdit(item);
-                                 }
-                             }><CiEdit />
-                             </Button>
+                <Card
+                    className="mx-4 mb-12 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:mx-8 sm:p-6 xl:mx-auto xl:max-w-6xl">
+                    {/*Middle Section*/}
+                    <div className="flex flex-col gap-3 px-4 py-6 sm:px-6 lg:flex-row lg:items-end">
+                        <div className="text-sm font-medium text-slate-500 lg:min-w-28 lg:pb-3">
+                            {day}
                         </div>
-                             <div className="edit flex  justify-between items-center">
-                         <span className={item.completed? "line-through": "" } >Detail: {item.detail}</span>
-                             <Button  className="cursor-pointer"  onClick={()=> handleDelete(item.id)}><MdDelete />
-                             </Button>
-                                 </div>
-                         </Card>
-                        </li>
-                    ))}
 
-                </ul>
-
-            </div>
-                </div>
+                        <Input value={addTitle} onChange={handleAdd} type={'text'} placeholder="Task title"
+                               className="h-12 w-full rounded-xl border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-indigo-500 lg:w-64"/>
+                        <Input value={addDetail} onChange={handleAddDetail} type={'text'}
+                               placeholder="Add a description..."
+                               className="h-12 w-full rounded-xl border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-indigo-500 lg:flex-1"/>
 
 
-            <div className="taskCard flex items-center p-2 pt-1 ml-14 gap-3 mr-10">
-                <Card className="h-37 w-47 text-[#3A3A36] bg-[#C7AE93] items-center text-xl">
-                    Task
-                    Completed
-                    <span className="text-3xl font-bold">{completed}</span></Card>
+                        <Button
+                            className="h-12 w-full gap-2 rounded-xl bg-indigo-600 px-5 font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 lg:w-auto"
+                            onClick={() => {
+                                if (addTitle.trim() === "" || addDetail.trim() === "") {
+                                    setAlert(true)
+                                    return;
+                                }
 
-                <Card className="h-37 w-47 text-[#3A3A36] bg-[#C4A49F] items-center text-xl">Pending Task
-                     <span className="text-3xl font-bold">{pendingTask}</span>
+                                if (edit !== null) {
+                                    setTodo(todo.map(item =>
+                                        item.id === edit
+                                            ? {...item, title: addTitle, detail: addDetail}
+                                            : item
+                                    ));
+
+                                    setEdit(null);
+                                } else {
+                                    setTodo([{
+                                        title: addTitle,
+                                        id: Date.now(),
+                                        detail: addDetail,
+                                        completed: false
+                                    }, ...todo],);
+                                }
+                                setAddTitle("")
+                                setAddDetail("")
+
+                            }}>
+                            <IoMdAdd className="h-5 w-5"/>
+                            <span>{edit !== null ? "Save Changes" : "Add Task"}</span>
+                        </Button>
+
+                    </div>
+
+                    {/*middle-Middle part*/}
+                    <div className="flex items-center justify-between px-4 pb-5 sm:px-6">
+                        <div className="text-sm font-medium text-slate-500">
+                            {fullYearDetail}
+                        </div>
+                        {/*<div className="searchbar">*/}
+                        {/*    <input type={'search'} placeholder={'search...'} className="h-7 w-30 text-sm border-4 border-y-yellow-300 rounded-full placeholder:text-center"></input>*/}
+                        {/*</div>*/}
+                    </div>
+
+                    <div id="overview" className="grid grid-cols-1 gap-4 px-4 pb-6 sm:grid-cols-3 sm:px-6">
+
+                        <Card className="gap-2 rounded-xl border border-slate-200 bg-slate-50 p-5 shadow-none">
+                        <span className="text-sm font-medium text-slate-500">
+                            Completed Tasks
+                        </span>
+                            <span className="text-3xl font-bold tracking-tight text-emerald-600">
+                            {completed}
+                        </span>
+                        </Card>
+
+                        <Card className="gap-2 rounded-xl border border-slate-200 bg-slate-50 p-5 shadow-none">
+                            <span className="text-sm font-medium text-slate-500">
+                                Pending Tasks
+                            </span>
+                            <span className="text-3xl font-bold tracking-tight text-amber-600">
+                                {pendingTask}
+                            </span>
+                        </Card>
+
+                        <Card className="gap-2 rounded-xl border border-slate-200 bg-slate-50 p-5 shadow-none">
+                            <span className="text-sm font-medium text-slate-500">
+                                Total Tasks
+                            </span>
+                            <span className="text-3xl font-bold tracking-tight text-indigo-600">
+                                {created}
+                            </span>
+                        </Card>
+
+                    </div>
+
+                    <div id="progress" className="px-4 pb-6 sm:px-6">
+                        <div className="mb-2 flex items-center justify-between">
+                            <span className="text-sm font-semibold text-slate-700">
+                                Your Progress
+                            </span>
+                            <span className="text-sm font-medium text-slate-500">
+                                {progress}% complete
+                            </span>
+                        </div>
+
+                        <div
+                            className="h-2 overflow-hidden rounded-full bg-slate-200"
+                            role="progressbar"
+                            aria-label="Task completion progress"
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            aria-valuenow={progress}
+                        >
+                            <div
+                                className="h-full rounded-full bg-indigo-600 transition-all duration-300"
+                                style={{ width: `${progress}%` }}
+                            />
+                        </div>
+
+                    </div>
+                    <div className="grid grid-cols-1 gap-6 px-4 pb-6 sm:px-6 lg:grid-cols-[270px_minmax(0,1fr)]">
+
+                        <div className="h-fit rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                            <h2 className="mb-3 text-sm font-semibold text-slate-700">
+                                Calendar
+                            </h2>
+
+                            <Calendar
+                                mode="single"
+                                className="mx-auto rounded-xl border-0 bg-transparent"
+                            />
+                        </div>
+                        {/*Todo List Print*/}
+
+                        <div id="tasks" className="min-w-0">
+                            <div className="mb-4 flex flex-wrap gap-2">
+
+                                <Button
+                                    size="sm"
+                                    variant={filter === "all" ? "default" : "outline"}
+                                    className={filter === "all" ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+                                    onClick={() => setFilter("all")}
+                                >
+                                    All ({created})
+                                </Button>
+
+                                <Button
+                                    size="sm"
+                                    variant={filter === "pending" ? "default" : "outline"}
+                                    className={filter === "pending" ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+                                    onClick={() => setFilter("pending")}
+                                >
+                                    Pending ({pendingTask})
+                                </Button>
+
+                                <Button
+                                    size="sm"
+                                    variant={filter === "completed" ? "default" : "outline"}
+                                    className={filter === "completed" ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+                                    onClick={() => setFilter("completed")}
+                                >
+                                    Completed ({completed})
+                                </Button>
+
+                            </div>
+
+                            {visibleTodos.length === 0 && (
+                                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center">
+
+                                    <h3 className="text-base font-semibold text-slate-800">
+                                        {todo.length === 0 ? "No tasks yet" : "No matching tasks"}
+                                    </h3>
+
+                                    <p className="mt-2 text-sm text-slate-500">
+                                        {todo.length === 0
+                                            ? "Add your first task above to get started."
+                                            : "Try another filter to see your tasks."}
+                                    </p>
+
+                                </div>
+                            )}
+                            <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                {visibleTodos.map(item => (
+                                    <li key={item.id} className="min-w-0">
+                                        <Card
+                                            className="flex h-full min-h-40 flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+
+
+                                            <div className="checkb flex items-center gap-2">
+                                                <input type="checkbox" className="h-4 w-4 accent-indigo-600"
+                                                       aria-label={`Mark ${item.title} as ${item.completed ? "incomplete" : "complete"}`}
+                                                       checked={item.completed}
+                                                       onChange={() => handleComplete(item.id)}
+
+                                                />
+                                                <span className="text-xs font-medium text-slate-500">
+                                    {item.completed ? "Completed" : "Mark as complete"}
+                                </span>
+                                            </div>
+                                            <div className="edit flex justify-between items-center">
+                             <span
+                                 className={`min-w-0 flex-1 wrap-break-word text-base font-semibold text-slate-900 ${item.completed ? "line-through opacity-50" : ""}`}>
+                                {item.title}
+                            </span>
+                                                <Button variant="ghost"
+                                                        size="icon"
+                                                        aria-label={`Edit ${item.title}`}
+                                                        className="shrink-0 rounded-lg cursor-pointer text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"
+                                                        onClick={() => {
+                                                            handleEdit(item);
+                                                        }
+                                                        }><CiEdit/>
+                                                </Button>
+                                            </div>
+                                            <div className="edit flex  justify-between items-center">
+                       <span
+                           className={`min-w-0 flex-1 wrap-break-word text-sm leading-relaxed text-slate-500 ${item.completed ? "line-through opacity-50" : ""}`}>
+                            {item.detail}
+                        </span>
+                                                <Button variant="ghost"
+                                                        size="icon"
+                                                        aria-label={`Delete ${item.title}`}
+                                                        className="shrink-0 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 cursor-pointer"
+                                                        onClick={() => handleDelete(item.id)}><MdDelete/>
+                                                </Button>
+                                            </div>
+                                        </Card>
+                                    </li>
+                                ))}
+
+                            </ul>
+
+                        </div>
+                    </div>
+
+
+
                 </Card>
 
-                <Card className="h-37 w-47 flex-1 items-center text-3xl text-sky-400">Task Created
-                     <span className="text-3xl font-bold text-black">{created}</span>
-                </Card>
+                <Footer/>
+                <Alert/>
             </div>
-
-            </Card>
-
-        <Footer />
-            <Alert/>
-    </div>
         </AlertContext.Provider>
 
-  )
+    )
 }
 
 export default App
