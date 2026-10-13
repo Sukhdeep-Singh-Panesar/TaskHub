@@ -146,9 +146,9 @@ function App() {
                     detail: addDetail,
                     completed: false
                 }, ...todo],);
-                setAddTitle("")
-                setAddDetail("")
             }
+            setAddTitle("")
+            setAddDetail("")
 
         }}>
             <IoMdAdd /> </Button>
