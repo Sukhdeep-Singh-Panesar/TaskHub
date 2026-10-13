@@ -112,17 +112,17 @@ function App() {
 
                 <Card className="mx-4 mb-12 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:mx-8 sm:p-6 xl:mx-auto xl:max-w-6xl">
         {/*Middle Section*/}
-        <div className="middle flex gap-6 items-center justify-center p-6 w-full ml-2 ">
-            <div className="datecontainer text-3xl pr-20 font-semibold text-red-300">
+        <div className="flex flex-col gap-3 px-4 py-6 sm:px-6 lg:flex-row lg:items-end">
+            <div className="text-sm font-medium text-slate-500 lg:min-w-28 lg:pb-3">
                 {day}
             </div>
 
-        <Input value={addTitle} onChange={handleAdd} type={'text'} placeholder={'type Title of task'} className="h-15 text-sm w-64 ml-15 mr-3 bg-blue-100 placeholder:text-center"/>
-        <Input  value={addDetail} onChange={handleAddDetail} type={'text'} placeholder={'Detail of your task'} className="flex-1 h-15 text-sm bg-blue-100 placeholder:text-center"/>
+        <Input value={addTitle} onChange={handleAdd} type={'text'} placeholder="Task title" className="h-12 w-full rounded-xl border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-indigo-500 lg:w-64"/>
+        <Input  value={addDetail} onChange={handleAddDetail} type={'text'} placeholder="Add a description..." className="h-12 w-full rounded-xl border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-indigo-500 lg:flex-1"/>
 
 
 
-        <Button className={'bg-green-600 h-15 w-15 p-4 cursor-pointer'} onClick={()=> {
+        <Button className="h-12 w-full gap-2 rounded-xl bg-indigo-600 px-5 font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 lg:w-auto" onClick={()=> {
             if(addTitle.trim() === "" || addDetail.trim() === "")
             {
                 setAlert(true)
@@ -150,7 +150,9 @@ function App() {
             setAddDetail("")
 
         }}>
-            <IoMdAdd /> </Button>
+            <IoMdAdd className="h-5 w-5" />
+            <span>{edit !== null ? "Save Changes" : "Add Task"}</span>
+        </Button>
 
         </div>
 
@@ -164,9 +166,9 @@ function App() {
                 {/*</div>*/}
             </div>
 
-            <div className="flex p-6 pt-1 w-full ml-2 gap-25">
+            <div className="grid grid-cols-1 gap-6 px-4 pb-6 sm:px-6 lg:grid-cols-[270px_minmax(0,1fr)]">
 
-            <div className=" flex flex-col mr-6">
+            <div className="w-full">
                 <Calendar
                     mode="single"
                     className="rounded-lg border border-collapse"
@@ -174,35 +176,44 @@ function App() {
                 </div>
                 {/*Todo List Print*/}
 
-                <div className=" flex-1">
+                <div className="min-w-0">
 
-                <ul className="flex flex-wrap gap-4 gap-x-16 ">
-
+                    <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {todo.map(item =>(
-                     <li key={item.id} className="w-90 mb-4 ">
-                         <Card className="flex flex-col w-90 p-3 h-30 gap-2 bg-[#C7AE93]">
+                     <li key={item.id} className="min-w-0">
+                         <Card className="flex h-full min-h-40 flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
 
 
                              <div className="checkb flex items-center gap-2">
-                                 <input type="checkbox" className=""  checked={item.completed}
+                                 <input type="checkbox" className="h-4 w-4 accent-indigo-600"  aria-label={`Mark ${item.title} as ${item.completed ? "incomplete" : "complete"}`} checked={item.completed}
                                         onChange={() => handleComplete(item.id)}
 
                                  />
-                             <label id="MAC">Mark as Complete</label>
+                                 <span className="text-xs font-medium text-slate-500">
+                                    {item.completed ? "Completed" : "Mark as complete"}
+                                </span>
                              </div>
                         <div className="edit flex justify-between items-center">
-                             <span className={item.completed? "line-through": "" }>
-                             Title: {item.title}
-                                  </span>
-                             <Button className="cursor-pointer" onClick={ ()=> {
+                             <span className={`min-w-0 flex-1 wrap-break-word text-base font-semibold text-slate-900 ${item.completed ? "line-through opacity-50" : ""}`}>
+                                {item.title}
+                            </span>
+                             <Button variant="ghost"
+                                     size="icon"
+                                     aria-label={`Edit ${item.title}`}
+                                     className="shrink-0 rounded-lg cursor-pointer text-slate-500 hover:bg-indigo-50 hover:text-indigo-600" onClick={ ()=> {
                                      handleEdit(item);
                                  }
                              }><CiEdit />
                              </Button>
                         </div>
                              <div className="edit flex  justify-between items-center">
-                         <span className={item.completed? "line-through": "" } >Detail: {item.detail}</span>
-                             <Button  className="cursor-pointer"  onClick={()=> handleDelete(item.id)}><MdDelete />
+                       <span className={`min-w-0 flex-1 wrap-break-word text-sm leading-relaxed text-slate-500 ${item.completed ? "line-through opacity-50" : ""}`}>
+                            {item.detail}
+                        </span>
+                             <Button  variant="ghost"
+                                      size="icon"
+                                      aria-label={`Delete ${item.title}`}
+                                      className="shrink-0 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 cursor-pointer" onClick={()=> handleDelete(item.id)}><MdDelete />
                              </Button>
                                  </div>
                          </Card>
