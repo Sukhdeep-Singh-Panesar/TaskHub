@@ -6,7 +6,7 @@ import { FcTodoList } from "react-icons/fc";
 function Footer() {
     return (
         <>
-            <div className=" flex w-full justify-between items-center bg-pink-200 gap-2 bottom-0 left-0 fixed p-7">
+            <div className="flex w-full flex-wrap items-center justify-between gap-4 border-t border-slate-200 bg-white px-6 py-5 text-sm text-slate-500">
                 <div className="bottomleft border-2 rounded-full p-2 border-black"><FcTodoList /></div>
                 <div className="centerContainer p-2">&copy; 2026 Sukhdeep Singh. All Rights Reserved. </div>
                 <div className="right flex gap-2">

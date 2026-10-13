@@ -11,7 +11,6 @@ import { MdDelete } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import {AlertContext} from "@/context/AlertContext.ts";
 import Alert from "./components/Alert.tsx"
-
 function App() {
     const today: Date = new Date();
 
@@ -101,17 +100,17 @@ function App() {
             addTitle,
             addDetail
         }}>
-            <div className="bg-pink-100">
+            <div className="min-h-screen bg-slate-50 text-slate-900">
      <Navbar />
 
 
 
 
         {/*Upper Section*/}
-        <div className="uppersection flex text-5xl font-roboot font-semibold gap-2 p-6 w-full pl-25 ml-2">Hello,
-        <div className="uppersection text-5xl font-roboot font-semibold opacity-60"> Start planning today</div> </div>
+        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-6 pt-10 pb-6 text-3xl font-semibold tracking-tight text-slate-900">Hello,
+        <div className="text-base font-normal text-slate-500"> Start planning today</div> </div>
 
-        <Card className="m-20 mt-2 bg-yellow-50">
+                <Card className="mx-4 mb-12 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:mx-8 sm:p-6 xl:mx-auto xl:max-w-6xl">
         {/*Middle Section*/}
         <div className="middle flex gap-6 items-center justify-center p-6 w-full ml-2 ">
             <div className="datecontainer text-3xl pr-20 font-semibold text-red-300">
@@ -173,7 +172,6 @@ function App() {
                     className="rounded-lg border border-collapse"
                 />
                 </div>
-
                 {/*Todo List Print*/}
 
                 <div className=" flex-1">
