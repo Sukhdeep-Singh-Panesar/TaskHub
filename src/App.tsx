@@ -44,7 +44,7 @@ function App() {
     });
     const [edit, setEdit] = useState<number | null>(null);
     const [alert, setAlert] = useState<boolean>(false);
-
+    const [filter, setFilter] = useState<"all" | "pending" | "completed">("all");
 
     useEffect(() => {
             localStorage.setItem("todo", JSON.stringify(todo))
@@ -59,9 +59,14 @@ function App() {
     }
 
     const handleDelete = (id: number) => {
-        setTodo(todo.filter(item => item.id !== id))
+        setTodo(prev => prev.filter(item => item.id !== id));
 
-    }
+        if (edit === id) {
+            setEdit(null);
+            setAddTitle("");
+            setAddDetail("");
+        }
+    };
     const handleEdit = (item: Todo) => {
         setAddTitle(item.title);
         setAddDetail(item.detail)
@@ -86,9 +91,14 @@ function App() {
     const completed = todo.filter(item => item.completed).length
     const pendingTask = todo.filter(item => !item.completed).length
     const created = todo.length
-    const progress = created === 0
-        ? 0
-        : Math.round((completed / created) * 100);
+    const progress = created === 0 ? 0 : Math.round((completed / created) * 100);
+
+    const visibleTodos = todo.filter(item => {
+        if (filter === "completed") return item.completed;
+        if (filter === "pending") return !item.completed;
+        return true;
+    });
+
     return (
 
 
@@ -166,77 +176,6 @@ function App() {
                         {/*</div>*/}
                     </div>
 
-                    <div className="grid grid-cols-1 gap-6 px-4 pb-6 sm:px-6 lg:grid-cols-[270px_minmax(0,1fr)]">
-
-                        <div className="h-fit rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                            <h2 className="mb-3 text-sm font-semibold text-slate-700">
-                                Calendar
-                            </h2>
-
-                            <Calendar
-                                mode="single"
-                                className="mx-auto rounded-xl border-0 bg-transparent"
-                            />
-                        </div>
-                        {/*Todo List Print*/}
-
-                        <div className="min-w-0">
-
-                            <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                {todo.map(item => (
-                                    <li key={item.id} className="min-w-0">
-                                        <Card
-                                            className="flex h-full min-h-40 flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
-
-
-                                            <div className="checkb flex items-center gap-2">
-                                                <input type="checkbox" className="h-4 w-4 accent-indigo-600"
-                                                       aria-label={`Mark ${item.title} as ${item.completed ? "incomplete" : "complete"}`}
-                                                       checked={item.completed}
-                                                       onChange={() => handleComplete(item.id)}
-
-                                                />
-                                                <span className="text-xs font-medium text-slate-500">
-                                    {item.completed ? "Completed" : "Mark as complete"}
-                                </span>
-                                            </div>
-                                            <div className="edit flex justify-between items-center">
-                             <span
-                                 className={`min-w-0 flex-1 wrap-break-word text-base font-semibold text-slate-900 ${item.completed ? "line-through opacity-50" : ""}`}>
-                                {item.title}
-                            </span>
-                                                <Button variant="ghost"
-                                                        size="icon"
-                                                        aria-label={`Edit ${item.title}`}
-                                                        className="shrink-0 rounded-lg cursor-pointer text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"
-                                                        onClick={() => {
-                                                            handleEdit(item);
-                                                        }
-                                                        }><CiEdit/>
-                                                </Button>
-                                            </div>
-                                            <div className="edit flex  justify-between items-center">
-                       <span
-                           className={`min-w-0 flex-1 wrap-break-word text-sm leading-relaxed text-slate-500 ${item.completed ? "line-through opacity-50" : ""}`}>
-                            {item.detail}
-                        </span>
-                                                <Button variant="ghost"
-                                                        size="icon"
-                                                        aria-label={`Delete ${item.title}`}
-                                                        className="shrink-0 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 cursor-pointer"
-                                                        onClick={() => handleDelete(item.id)}><MdDelete/>
-                                                </Button>
-                                            </div>
-                                        </Card>
-                                    </li>
-                                ))}
-
-                            </ul>
-
-                        </div>
-                    </div>
-
-
                     <div className="grid grid-cols-1 gap-4 px-4 pb-6 sm:grid-cols-3 sm:px-6">
 
                         <Card className="gap-2 rounded-xl border border-slate-200 bg-slate-50 p-5 shadow-none">
@@ -293,6 +232,123 @@ function App() {
                         </div>
 
                     </div>
+                    <div className="grid grid-cols-1 gap-6 px-4 pb-6 sm:px-6 lg:grid-cols-[270px_minmax(0,1fr)]">
+
+                        <div className="h-fit rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                            <h2 className="mb-3 text-sm font-semibold text-slate-700">
+                                Calendar
+                            </h2>
+
+                            <Calendar
+                                mode="single"
+                                className="mx-auto rounded-xl border-0 bg-transparent"
+                            />
+                        </div>
+                        {/*Todo List Print*/}
+
+                        <div className="min-w-0">
+                            <div className="mb-4 flex flex-wrap gap-2">
+
+                                <Button
+                                    size="sm"
+                                    variant={filter === "all" ? "default" : "outline"}
+                                    className={filter === "all" ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+                                    onClick={() => setFilter("all")}
+                                >
+                                    All ({created})
+                                </Button>
+
+                                <Button
+                                    size="sm"
+                                    variant={filter === "pending" ? "default" : "outline"}
+                                    className={filter === "pending" ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+                                    onClick={() => setFilter("pending")}
+                                >
+                                    Pending ({pendingTask})
+                                </Button>
+
+                                <Button
+                                    size="sm"
+                                    variant={filter === "completed" ? "default" : "outline"}
+                                    className={filter === "completed" ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+                                    onClick={() => setFilter("completed")}
+                                >
+                                    Completed ({completed})
+                                </Button>
+
+                            </div>
+
+                            {visibleTodos.length === 0 && (
+                                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center">
+
+                                    <h3 className="text-base font-semibold text-slate-800">
+                                        {todo.length === 0 ? "No tasks yet" : "No matching tasks"}
+                                    </h3>
+
+                                    <p className="mt-2 text-sm text-slate-500">
+                                        {todo.length === 0
+                                            ? "Add your first task above to get started."
+                                            : "Try another filter to see your tasks."}
+                                    </p>
+
+                                </div>
+                            )}
+                            <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                {visibleTodos.map(item => (
+                                    <li key={item.id} className="min-w-0">
+                                        <Card
+                                            className="flex h-full min-h-40 flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+
+
+                                            <div className="checkb flex items-center gap-2">
+                                                <input type="checkbox" className="h-4 w-4 accent-indigo-600"
+                                                       aria-label={`Mark ${item.title} as ${item.completed ? "incomplete" : "complete"}`}
+                                                       checked={item.completed}
+                                                       onChange={() => handleComplete(item.id)}
+
+                                                />
+                                                <span className="text-xs font-medium text-slate-500">
+                                    {item.completed ? "Completed" : "Mark as complete"}
+                                </span>
+                                            </div>
+                                            <div className="edit flex justify-between items-center">
+                             <span
+                                 className={`min-w-0 flex-1 wrap-break-word text-base font-semibold text-slate-900 ${item.completed ? "line-through opacity-50" : ""}`}>
+                                {item.title}
+                            </span>
+                                                <Button variant="ghost"
+                                                        size="icon"
+                                                        aria-label={`Edit ${item.title}`}
+                                                        className="shrink-0 rounded-lg cursor-pointer text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"
+                                                        onClick={() => {
+                                                            handleEdit(item);
+                                                        }
+                                                        }><CiEdit/>
+                                                </Button>
+                                            </div>
+                                            <div className="edit flex  justify-between items-center">
+                       <span
+                           className={`min-w-0 flex-1 wrap-break-word text-sm leading-relaxed text-slate-500 ${item.completed ? "line-through opacity-50" : ""}`}>
+                            {item.detail}
+                        </span>
+                                                <Button variant="ghost"
+                                                        size="icon"
+                                                        aria-label={`Delete ${item.title}`}
+                                                        className="shrink-0 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 cursor-pointer"
+                                                        onClick={() => handleDelete(item.id)}><MdDelete/>
+                                                </Button>
+                                            </div>
+                                        </Card>
+                                    </li>
+                                ))}
+
+                            </ul>
+
+                        </div>
+                    </div>
+
+
+
                 </Card>
 
                 <Footer/>
